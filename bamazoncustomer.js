@@ -5,7 +5,7 @@ var connection = mysql.createConnection({
     host: "localhost",
     port:3306,
     user:"root",
-    password:"system*",
+    password:"",
     database:"bamazon"
 });
 
@@ -37,15 +37,18 @@ start = () =>{
             }
             ]).then((answer2)=>{
                 connection.query("SELECT * FROM products WHERE id=?",[answer1.menu],(err, res)=>{
-                    if(res.inventory < answer2.stock){
-                        console.log("Insufficient stock.");
+                    console.log(res);
+                    if(answer2.stock > res[0].inventory){
+                        console.log("Insufficient stock!!!!");
                         start();
                     }
+                    else{
                     connection.query("UPDATE products SET inventory = inventory - "+(answer2.stock)+" WHERE id=?",[answer1.menu],(err)=>{
                if(err) throw err;
                console.log("Thank you for your buisness!");
                start();
                     }) 
+                }
                 });
 
             })
