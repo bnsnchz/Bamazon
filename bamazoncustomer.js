@@ -11,14 +11,15 @@ var connection = mysql.createConnection({
 
 connection.connect((err)=>{
     if (err) throw err;
-    start();
+    startCustomer();
 })
 
-start = () =>{
+startCustomer = () =>{
     connection.query("SELECT id, product_name, price FROM products",(err,res)=>{
         if(err) throw err;
         for(var i = 0; i < res.length; i++){
             console.log(res[i].id, res[i].product_name, res[i].price);
+            console.log("------------------------------------");
         }
         });
         setTimeout(() => {
@@ -37,16 +38,17 @@ start = () =>{
             }
             ]).then((answer2)=>{
                 connection.query("SELECT * FROM products WHERE id=?",[answer1.menu],(err, res)=>{
-                    console.log(res);
                     if(answer2.stock > res[0].inventory){
                         console.log("Insufficient stock!!!!");
-                        start();
+                        console.log("------------------------------------");
+                        startCustomer();
                     }
                     else{
                     connection.query("UPDATE products SET inventory = inventory - "+(answer2.stock)+" WHERE id=?",[answer1.menu],(err)=>{
                if(err) throw err;
                console.log("Thank you for your buisness!");
-               start();
+               console.log("------------------------------------");
+               startCustomer();
                     }) 
                 }
                 });
@@ -54,6 +56,6 @@ start = () =>{
             })
 
         })
-},3000);
+},1000);
 
 }
